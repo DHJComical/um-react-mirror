@@ -1,0 +1,38 @@
+name: Build and Deploy
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      npm_config_registry: https://registry.npmmirror.com
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          standalone: true
+          run_install: |
+            - args: [--frozen-lockfile, --strict-peer-dependencies]
+      
+      - name: Build
+        run: pnpm build
+      
+      - name: Pack Win64
+        run: |
+          python3 -m zipfile -c um-react.zip dist/.
+          ./scripts/make-win64.sh
+      
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist/
+      
+      - name: Prepare for deployment
+        run: |
+          cp um-react.zip dist/"release-${GITHUB_SHA}.zip"
+          cp win64/dist/*.zip dist/"release-${GITHUB_SHA}-win64.zip"
+          python3 -m zipfile -c um-react-site.zip dist/.
