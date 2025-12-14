@@ -1,7 +1,7 @@
 import { ExtLink } from '~/components/ExtLink';
 import { Header2, Header3, Header4 } from '~/components/HelpText/Headers';
 
-import { NavLink } from 'react-router';
+import { NavLink } from 'react-router-dom';
 
 export function OtherFAQ() {
   return (

@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '~/hooks';
 import { commitStagingChange, discardStagingChanges } from './settingsSlice';
 import { selectIsSettingsNotSaved } from './settingsSelector';
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
 import { SETTINGS_TABS } from '~/features/settings/settingsTabs.tsx';
 import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 import { toast } from 'react-toastify';

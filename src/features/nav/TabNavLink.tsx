@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import type { RefAttributes } from 'react';
-import { NavLink, type NavLinkProps } from 'react-router';
+import { NavLink, type NavLinkProps } from 'react-router-dom';
 
 const tabClassNames = ({ isActive }: { isActive: boolean }) =>
   classNames(

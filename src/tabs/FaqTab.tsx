@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
 import { FAQ_PAGES } from '~/faq/FAQPages';
 import { ResponsiveNav } from '~/features/nav/ResponsiveNav';
 import { TabNavLink } from '~/features/nav/TabNavLink';
