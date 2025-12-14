@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router';
+import { HashRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { MdSettings, MdHome, MdQuestionAnswer } from 'react-icons/md';
 
 import { MainTab } from '~/tabs/MainTab';
@@ -25,7 +25,7 @@ export function AppRoot() {
   useEffect(() => persistSettings(store), []);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Provider store={store}>
         <div role="tablist" className="tabs tabs-border w-full justify-center border-b-2 border-base-200 box-content">
           <NavLink to="/" role="tab" className={tabClassNames}>
@@ -73,6 +73,6 @@ export function AppRoot() {
 
         <Footer />
       </Provider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
