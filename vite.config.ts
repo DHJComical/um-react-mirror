@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import url from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -21,24 +22,18 @@ const COMMAND_GIT_VERSION = 'git describe --long --dirty --tags --always';
 const shortCommit = process.env.GIT_COMMIT || tryCommand(COMMAND_GIT_VERSION, __dirname, 'unknown');
 const version = `${pkg.version} (${shortCommit})`;
 
-// https://vitejs.dev/config/
 export default defineConfig({
   base: '/um-react-mirror/',
+
   worker: {
     format: 'es',
   },
   server: {
     fs: {
-      // Note:
-      //   This is _insecure_, but is required to get pnpm link to work.
-      // strict: false,
-
       allow: [
         'index.html',
         'src',
         'node_modules',
-
-        // Allow pnpm to link.
         process.env.LIB_UM_WASM_LOADER_DIR || '../lib_um_crypto_rust/um_wasm_loader',
       ],
     },
@@ -62,9 +57,11 @@ export default defineConfig({
     topLevelAwait(),
     VitePWA({
       registerType: 'prompt',
+      scope: '/um-react-mirror/',
+      base: '/um-react-mirror/',
       workbox: {
-        // Cache everything from dist
         globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm,webp}'],
+        navigateFallback: null,
       },
       manifest: {
         display: 'standalone',
@@ -73,6 +70,8 @@ export default defineConfig({
         lang: 'zh-cmn-Hans-CN',
         description: '在现代浏览器解锁已购的加密音乐！',
         theme_color: '#ffffff',
+        start_url: '/um-react-mirror/',
+        scope: '/um-react-mirror/',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -93,8 +92,6 @@ export default defineConfig({
     alias: {
       '~': path.resolve(__dirname, 'src'),
       '@sql-wasm': path.resolve(__dirname, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
-
-      // workaround for vite, workbox (PWA)
       module: path.resolve(__dirname, 'src', 'dummy.mjs'),
     },
   },
@@ -104,7 +101,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           core: ['react', 'react-dom'],
-          router: ['react-router'],
+          router: ['react-router', 'react-router-dom'],
           store: ['react-redux', '@reduxjs/toolkit'],
           extras: ['react-dropzone', 'react-toastify'],
         },
@@ -116,7 +113,6 @@ export default defineConfig({
     mockReset: true,
     environment: 'jsdom',
     setupFiles: ['src/test-utils/setup-jest.ts'],
-    // workaround: sql.js is not ESModule friendly, yet...
     deps: {
       optimizer: {
         web: {
@@ -125,12 +121,11 @@ export default defineConfig({
       },
     },
     api: {
-      port: 5174, // vite port + 1
+      port: 5174,
     },
     coverage: {
       provider: 'v8',
       exclude: [
-        // default rules
         'coverage/**',
         'dist/**',
         'packages/*/test{,s}/**',
@@ -143,8 +138,6 @@ export default defineConfig({
         '**/__tests__/**',
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
-
-        // custom ones
         'src/test-utils/**',
       ],
     },
